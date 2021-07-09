@@ -6,11 +6,14 @@ save_flag = 0;
 
 
 %matlab data
-matlab_fname = '../WAVI_MATLAB_MISMIP_PLUS/Ice1r_CWI_WAVI_L1L2c_Weertman_2km.nc';
+matlab_fname = '../WAVI_MATLAB_MISMIP_PLUS/Ice1rr_CWI_WAVI_L1L2c_Weertman_2km.nc';
 %ncdisp(matlab_fname)
 t = ncread(matlab_fname, 'time');
+t = t(1:11); %remove beyond 100 yrs
 xGL = ncread(matlab_fname, 'xGL');
+xGL = xGL(1:11,:);
 yGL = ncread(matlab_fname, 'yGL');
+yGL = yGL(1:11, :);
 
 xGL(xGL > 1e10) = nan;
 yGL(yGL > 1e10) = nan;
@@ -21,7 +24,7 @@ A = parula(length(t));
 for i = 1:length(t)
 plot(xGL(i,:), yGL(i,:), 'color', A(i,:), 'linewidth', 1.5)
 end
-title('MISMIP_ice1r_2km matlab grounding line', 'interpreter', 'none');
+title('ice1rr_2km matlab grounding line', 'interpreter', 'none');
 xlabel('x');
 ylabel('y');
 c = colorbar;
@@ -39,14 +42,13 @@ hold on; box on; grid on
 plot(t, centreline_pos/1e3, 'color', [0, 47, 167]/255, 'linewidth', 2);
 xlabel('time (yrs)');
 ylabel('GL position x_{gl}(y = 0) (km)')
-title('MISMIP_ice1r_2km matlab grounding line', 'interpreter', 'none');
+title('ice1r_2km matlab centre line position', 'interpreter', 'none');
 
 
 %
 %repeat for julia
 %
-julia_fname = "/data/icesheet_output/aleey/wavi/MISMIP_005/run/outfile.nc"; %with partial grounding
-julia_fname = "/data/icesheet_output/aleey/wavi/MISMIP_012/run/outfile.nc"; %no partial grounding
+julia_fname = "/data/icesheet_output/aleey/wavi/MISMIP_015/run/outfile.nc"; 
 
 t = ncread(julia_fname, 'TIME');
 x = ncread(julia_fname, 'x');
@@ -56,7 +58,7 @@ grfrac = ncread(julia_fname, 'grfrac');
 ax(3) = subplot(2,2,3); 
 hold on; box on; grid on;
 A = parula(length(t));
-tout =  [1, 10:10:length(t)];
+tout =  [2, 10:10:length(t)];
 
 centreline_pos_julia = nan(1,length(t));
 for i = tout
@@ -74,18 +76,18 @@ centreline_pos_julia = centreline_pos_julia(~isnan(centreline_pos_julia));
 
 %xlim(ax(1).XLim);
 %ylim(ax(1).YLim)
-title('MISMIP_ice1r_2km julia grounding line', 'interpreter', 'none');
+title('ice1r_2km julia grounding line', 'interpreter', 'none');
 xlabel('x');
 ylabel('y');
-ax(3).XLim = [4.1*1e5, 5.4e5];
+ax(3).XLim = [4*1e5, 5.4e5];
 ax(1).XLim = ax(3).XLim;
 ax(3).YLim = ax(1).YLim - 4*1e4;
 
 
 ax(4) = subplot(2,2,4);
 hold on; box on; grid on
-plot(tout, centreline_pos_julia/1e3,'color', [0, 47, 167]/255, 'linewidth', 2);
-ax(4).YLim = [4.2,4.6]*1e2;
+plot(tout+100, centreline_pos_julia/1e3,'color', [0, 47, 167]/255, 'linewidth', 2);
+ax(4).YLim = [4.0,4.4]*1e2;
 ax(2).YLim = ax(4).YLim;
 xlabel('time (yrs)');
 title('MISMIP_ice1r_2km julia grounding line', 'interpreter', 'none');
@@ -95,5 +97,5 @@ ylabel('GL position x_{gl}(y = 0) (km)')
 % save flag
 % 
 if save_flag 
-saveas(gcf, 'MISMIP_ice1r_2km.epsc', 'espc');
+saveas(gcf, 'ice1rr_2km.epsc', 'espc');
 end
