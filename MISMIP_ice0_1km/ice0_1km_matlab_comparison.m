@@ -83,7 +83,7 @@ ax(1).XLim = ax(3).XLim;
 ax(3).YLim = ax(1).YLim;
 
 ax(4) = subplot(2,2,4);
-hold on; box on; grid on
+hold on; box on; grid on 
 centreline_var = (centreline_pos_julia - centreline_pos_julia(1))./centreline_pos_julia(1)*100;
 plot(t, centreline_var/1e3, 'color', [0, 47, 167]/255, 'linewidth', 2);
 xlabel('time (yrs)');
